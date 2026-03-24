@@ -1,10 +1,10 @@
 "use server";
 
+import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
 
-export async function createProduct(formData: FormData) {
+export async function updateProduct(id: string, formData: FormData) {
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const categoryId = formData.get("categoryId") as string;
@@ -17,12 +17,13 @@ export async function createProduct(formData: FormData) {
     const colorsData = formData.get("colors") as string;
     const colors = colorsData ? JSON.parse(colorsData) : [];
 
-    // Busca o nome da categoria
+    // Get the category name for the legacy 'category' field
     const category = await prisma.category.findUnique({
         where: { id: categoryId },
     });
 
-    await prisma.product.create({
+    await prisma.product.update({
+        where: { id },
         data: {
             name,
             description,
@@ -30,17 +31,17 @@ export async function createProduct(formData: FormData) {
             oldPrice,
             stock,
             location,
-            category: category?.name || "Geral",
             categoryId,
-            images: imageUrl
-                ? {
-                    create: {
-                        url: imageUrl,
-                        isPrimary: true,
-                    },
+            category: category?.name || "Geral",
+            images: imageUrl ? {
+                upsert: {
+                    where: { id: "primary-image-" + id },
+                    update: { url: imageUrl },
+                    create: { url: imageUrl, isPrimary: true, id: "primary-image-" + id }
                 }
-                : undefined,
+            } : undefined,
             colors: {
+                deleteMany: {}, // Clean existing colors
                 create: colors.map((c: any) => ({
                     name: c.name,
                     hexCode: c.hexCode,
@@ -52,6 +53,5 @@ export async function createProduct(formData: FormData) {
 
     revalidatePath("/admin/produtos");
     revalidatePath("/produtos");
-    revalidatePath("/");
     redirect("/admin/produtos");
 }

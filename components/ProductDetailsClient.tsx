@@ -35,16 +35,21 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
 
     if (!mounted) return null;
 
-    const primaryImage = product.images?.find((img: any) => img.isPrimary)?.url || product.images?.[0]?.url || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=90";
+    const currentColorObject = product.colors?.find((c: any) => c.id === selectedColor);
+    const colorImage = currentColorObject?.imageUrl;
+    const defaultImage = product.images?.find((img: any) => img.isPrimary)?.url || product.images?.[0]?.url || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=90";
+
+    // Prioriza a imagem da cor, depois a imagem principal do produto
+    const currentImage = colorImage || defaultImage;
 
     return (
-        <div ref={containerRef} className={`bg-[#F8F9FA] text-[#1D1D1F] ${inter.className} pb-12 md:pb-24 px-4 sm:px-8 lg:px-12 flex flex-col items-center justify-start overflow-x-hidden antialiased relative`}>
+        <div ref={containerRef} className={`bg-[#F8F9FA] text-[#1D1D1F] ${inter.className} pt-32 md:pt-48 pb-12 md:pb-24 px-4 sm:px-8 lg:px-12 flex flex-col items-center justify-start overflow-x-hidden antialiased relative`}>
 
             {/* Decorative center background block */}
             <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[60%] h-[600px] bg-white opacity-40 rounded-[4rem] blur-[3xl] pointer-events-none z-0"></div>
 
             {/* --- HERO SECTION : 3 COLUMNS --- */}
-            <div className="relative z-10 w-full max-w-[1280px] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-10 xl:gap-14 items-start justify-center mt-6">
+            <div className="relative z-10 w-full max-w-[1280px] mx-auto flex flex-col lg:flex-row gap-12 lg:gap-10 xl:gap-14 items-start justify-center mt-0">
 
                 {/* LEFT COLUMN - Settings & Info */}
                 <div className="flex flex-col gap-6 w-full lg:w-[320px] flex-shrink-0 pt-4">
@@ -159,11 +164,12 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
                         className="relative w-full aspect-square md:aspect-[4/5.5] z-0 drop-shadow-2xl rounded-[32px] md:rounded-[3rem] overflow-hidden bg-[#EAE8E3]/50"
                     >
                         <Image
-                            src={primaryImage}
+                            src={currentImage}
                             alt={product.name}
                             fill
-                            className="object-contain scale-100 md:scale-110 p-6 md:p-12 drop-shadow-2xl"
+                            className="object-contain scale-100 md:scale-110 p-6 md:p-12 drop-shadow-2xl transition-all duration-700"
                             priority
+                            key={currentImage}
                         />
                     </motion.div>
 

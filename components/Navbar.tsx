@@ -58,15 +58,15 @@ export default function Navbar() {
                             : "bg-white/5 backdrop-blur-sm border-white/10 shadow-none text-white hover:bg-white/10"
                         }`}>
 
-                        <Link href="#" className="relative group py-1">
+                        <Link href="/produtos" className="relative group py-1">
                             <span className="text-[10px] uppercase tracking-[3px] font-black opacity-40 group-hover:opacity-100 transition-opacity whitespace-nowrap">Rotinas</span>
                         </Link>
 
-                        <Link href="#" className="relative group py-1">
+                        <Link href="/produtos#Skincare" className="relative group py-1">
                             <span className="text-[10px] uppercase tracking-[3px] font-black opacity-40 group-hover:opacity-100 transition-opacity whitespace-nowrap">Skincare</span>
                         </Link>
 
-                        <Link href="#" className="relative group py-1">
+                        <Link href="/produtos#Maquiagem" className="relative group py-1">
                             <span className="text-[10px] uppercase tracking-[3px] font-black opacity-40 group-hover:opacity-100 transition-opacity whitespace-nowrap">Maquiagem</span>
                         </Link>
 
